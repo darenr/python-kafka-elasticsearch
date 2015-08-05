@@ -48,15 +48,20 @@ with open(sys.argv[1]) as fp:
         # look for lat/lon
         if not m[k]:
           properties[k] = {"type": "string", "store": "yes", "enabled": "true"}
-        elif re.match(r'^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$', m[k]):
+        elif re.match(r'^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$', m[k].strip()):
           print "detected", k, "is a geo_point type"
           properties[k] = {"type": "geo_point", "store": "yes", "enabled": "true"}
-        elif m[k].isdigit():
-          properties[k] = {"type": "integer", "store": "yes", "enabled": "true"}
-        elif k == 'timestamp':
-          properties[k] = {"type": "date", "enabled" : "true", "store" : "yes", "format": "dateOptionalTime"}
         else:
-          properties[k] = {"type": "string", "store": "yes", "enabled": "true"}
+          try:
+            x = float(m[k])
+            properties[k] = {"type": "float", "store": "yes", "enabled": "true"}
+          except ValueError:
+            if m[k].isdigit():
+              properties[k] = {"type": "integer", "store": "yes", "enabled": "true"}
+            elif k == 'timestamp':
+              properties[k] = {"type": "date", "enabled" : "true", "store" : "yes", "format": "dateOptionalTime"}
+            else:
+              properties[k] = {"type": "string", "store": "yes", "enabled": "true"}
 
       print json.dumps(schema, sort_keys=True, indent=2, separators=(',', ': '))
       wrapper['schema'] = schema
