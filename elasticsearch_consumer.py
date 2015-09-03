@@ -1,16 +1,22 @@
 from kafka import KafkaConsumer
 from datetime import datetime
 from elasticsearch import Elasticsearch
+import time
 import json
 
 es = Elasticsearch()
 
 # To consume messages
-consumer = KafkaConsumer('test',
-                         bootstrap_servers=['localhost:9092'])
+consumer = KafkaConsumer('test', group_id="es_group",
+                          auto_commit_enable=True,
+                          auto_commit_interval_ms=30 * 1000,
+                          auto_offset_reset='smallest',
+                          bootstrap_servers=['localhost:9092'])
 esid = 0
 
 for message in consumer:
+    time.sleep(1)
+    print "next"
     esid += 1
     if esid % 1000 == 0:
       print esid

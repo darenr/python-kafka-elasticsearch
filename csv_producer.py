@@ -12,7 +12,8 @@ if not len(sys.argv) is 3:
   sys.exit(-1)
 
 # To send messages synchronously
-kafka = KafkaClient('mkressirer.us.oracle.com:32770')
+#kafka = KafkaClient('mkressirer.us.oracle.com:32770')
+kafka = KafkaClient('localhost:9092')
 producer = SimpleProducer(kafka)
 
 topic = 'test'
