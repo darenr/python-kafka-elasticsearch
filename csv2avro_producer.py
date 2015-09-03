@@ -3,6 +3,7 @@ from kafka.common import LeaderNotAvailableError
 import avro.schema
 from avro.io import DatumWriter
 import io
+import requests
 import sys
 import csv
 import json
@@ -39,6 +40,9 @@ with open(sys.argv[1]) as fp:
         schema['fields'].append({"name": k, "type": "string"})
 
       print json.dumps(schema)
+
+      # put the schema in the avro registry
+      print requests.put("http://localhost:8080/ingest/v1/set_avro_schema.json/" + topic, data=json.dumps(schema))
 
     avro_schema = avro.schema.parse(json.dumps(schema))
     writer = avro.io.DatumWriter(avro_schema)

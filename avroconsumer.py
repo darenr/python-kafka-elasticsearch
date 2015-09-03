@@ -2,6 +2,8 @@ from kafka import KafkaConsumer
 import avro.schema
 import avro.io
 import io
+import requests
+import json
 
 topic = 'test'
  
@@ -10,8 +12,9 @@ consumer = KafkaConsumer(topic,
                          group_id='avro_group',
                          bootstrap_servers=['localhost:9092'])
  
-schema = avro.schema.parse('{"fields": [{"type": "string", "name": "cdatetime"}, {"type": "string", "name": "district"}, {"type": "string", "name": "crimedescr"}, {"type": "string", "name": "beat"}, {"type": "string", "name": "grid"}, {"type": "string", "name": "address"}, {"type": "string", "name": "ucr_ncic_code"}, {"type": "string", "name": "geo"}], "type": "record", "name": "SacramentocrimeJanuary2006"}')
+schema = avro.schema.parse(requests.get("http://localhost:8080/ingest/v1/get_avro_schema.json/" + topic).content)
 
+print schema
  
 for msg in consumer:
     bytes_reader = io.BytesIO(msg.value)
