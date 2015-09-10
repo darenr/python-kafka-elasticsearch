@@ -43,6 +43,19 @@ def index():
     template = """
      <html>
        <head>
+        <style>
+          ul {
+            transform: rotate(90deg);
+            transform-origin: right top 0;
+            position: relative;
+            top: 900px;
+          }
+
+          body {
+            color: green;
+            background-color: black;
+          }
+        </style>
        </head>
        <body>
          <h1>Server sent events:</h1>

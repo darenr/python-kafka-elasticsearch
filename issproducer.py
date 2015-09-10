@@ -12,7 +12,7 @@ import datetime
 import re
 
 # To send messages synchronously
-kafka = KafkaClient('localhost:9092')
+kafka = KafkaClient('slc08use.us.oracle.com:9092')
 producer = SimpleProducer(kafka)
 
 topic = 'iss'
@@ -28,7 +28,7 @@ schema = {
 avro_schema = avro.schema.parse(json.dumps(schema))
 
 # put the schema in the avro registry
-print requests.put("http://localhost:8080/ingest/v1/set_avro_schema.json/" + topic, data=json.dumps(schema))
+print requests.put("http://slc08use.us.oracle.com:8080/ingest/v1/set_avro_schema.json/" + topic, data=json.dumps(schema))
 
 for x in range(10):
   time.sleep(1)
