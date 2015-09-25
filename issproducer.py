@@ -8,42 +8,26 @@ import sys
 import csv
 import json
 import time
-import datetime
+import time
 import re
 
 # To send messages synchronously
 kafka = KafkaClient('slc08use.us.oracle.com:9092')
 producer = SimpleProducer(kafka)
 
+time_offset = 1443217773*1000 # 9/25/15 
+
 topic = 'iss'
 
-schema = {
-    "type": "record", "name": "iss",
-    "fields": [
-      {"name": "latlon", "type": "string"},
-      {"name": "timestamp", "type": "long"}
-    ]
-}
-
-avro_schema = avro.schema.parse(json.dumps(schema))
-
-# put the schema in the avro registry
-print requests.put("http://slc08use.us.oracle.com:8080/ingest/v1/set_avro_schema.json/" + topic, data=json.dumps(schema))
-
-for x in range(10):
+for x in range(100):
   time.sleep(1)
   j = requests.get("http://api.open-notify.org/iss-now.json").json()
 
-  m = { "timestamp": j['timestamp'],
+  m = { "id": int(time.time()*1000) - time_offset,
+        "timestamp": j['timestamp'],
         "latlon": str(j['iss_position']['latitude']) \
           + ','  \
           + str(j['iss_position']['longitude']) }
 
-  print m
-  writer = avro.io.DatumWriter(avro_schema)
-  bytes_writer = io.BytesIO()
-  encoder = avro.io.BinaryEncoder(bytes_writer)
-    
-  writer.write(m, encoder)
-  raw_bytes = bytes_writer.getvalue()
-  producer.send_messages(topic, raw_bytes)
+  print json.dumps(m)
+  producer.send_messages(topic, json.dumps(m))

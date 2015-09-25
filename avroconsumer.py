@@ -1,4 +1,5 @@
 from kafka import KafkaConsumer
+from kafka.common import ConsumerTimeout
 import avro.schema
 import avro.io
 import io
@@ -6,25 +7,32 @@ import requests
 import json
 import sys
 
-topic = 'test'
+topic = 'simple'
  
 # To consume messages
 consumer = KafkaConsumer(topic,
-                         group_id='avro_group',
-                         bootstrap_servers=['localhost:9092'])
- 
-schema = None
-for msg in consumer:
-    if not schema:
-      r = requests.get("http://localhost:8080/ingest/v1/get_avro_schema.json/" + topic)
-      if not r.status_code == 200:
-        print "no schema"
-        sys.exit(-1)
+                         group_id='test_group',
+                         consumer_timeout_ms=1000,
+                         auto_commit_enable=True,
+                         auto_commit_interval_ms=30 * 1000,
+                         auto_offset_reset='smallest',
+                         bootstrap_servers=['slc08use.us.oracle.com:9092'])
+schema = avro.schema.parse('''
+{"type":"record","name":"test8","fields":[{"name":"id","type":"int"},{"name":"name","type":"string"}]}
+''')
+print schema
 
-      schema = avro.schema.parse(r.json()['schema'])
-      print schema
- 
-    bytes_reader = io.BytesIO(msg.value)
-    decoder = avro.io.BinaryDecoder(bytes_reader)
-    reader = avro.io.DatumReader(schema)
-    print  reader.read(decoder)
+while True:
+  try:
+    for msg in consumer:
+      print msg
+      #bytes_reader = io.BytesIO(msg.value)
+      #decoder = avro.io.BinaryDecoder(bytes_reader)
+      #reader = avro.io.DatumReader(schema)
+      #print("%s:%d:%d: key=%s value=%s" % (msg.topic, msg.partition,
+       #                                  msg.offset, msg.key,
+        #                                 reader.read(decoder)))
+      #consumer.commit()
+
+  except ConsumerTimeout:
+    print 'nothing...'

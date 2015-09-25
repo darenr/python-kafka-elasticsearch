@@ -55,14 +55,19 @@ def index():
             color: green;
             background-color: black;
           }
+
+          h1 {
+            color: ccc;
+            padding: 20px;
+            background-color: #333;
+          }
         </style>
        </head>
        <body>
-         <h1>Server sent events:</h1>
+         <h1>Realtime Kafka Messages streamed over HTML5 Server Side Sockets</h1>
          <ul id="ul">
          <script type="text/javascript">
 
-        
          var evtSrc = new EventSource("/subscribe");
 
          evtSrc.onmessage = function(e) {
@@ -101,7 +106,7 @@ gevent.spawn(kafka)
 
 if __name__ == "__main__":
     app.debug = True
-    server = WSGIServer(("", 5000), app)
+    server = WSGIServer(("", 5050), app)
     server.serve_forever()
     # Then visit http://localhost:5000 to subscribe 
     # and send messages by visiting http://localhost:5000/publish
