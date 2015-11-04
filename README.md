@@ -1,5 +1,8 @@
 # python-kafka-elasticsearch
 
++[![Project status](https://img.shields.io/badge/Project%20Status-MildlyActive-brightgreen.svg)](#status)
+
+
 Simple learning project pushing CSV data into Kafka then indexing the data in ElasticSearch.
 
 The indexes are created with a very rudimentary type discovery that uses simple regex patterns.
