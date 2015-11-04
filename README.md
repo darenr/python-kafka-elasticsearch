@@ -1,6 +1,6 @@
 # python-kafka-elasticsearch
 
-+[![Project status](https://img.shields.io/badge/Project%20Status-MildlyActive-brightgreen.svg)](#status)
+[![Project status](https://img.shields.io/badge/Project%20Status-MildlyActive-brightgreen.svg)](#status)
 
 
 Simple learning project pushing CSV data into Kafka then indexing the data in ElasticSearch.
